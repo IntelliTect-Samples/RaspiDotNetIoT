@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloud.WebApp", "Cloud.WebApp\Cloud.WebApp.csproj", "{A97FC5B8-9AE7-4ECE-B394-8CCFB10E5F05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pi.Web", "Pi.Web\Pi.Web.csproj", "{0E6B71E1-49C1-4E22-ABA4-7F96D9138B06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pi.IO", "Pi.IO\Pi.IO.csproj", "{EF52EE2B-07ED-4AD0-B02B-4394FFE787CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A97FC5B8-9AE7-4ECE-B394-8CCFB10E5F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A97FC5B8-9AE7-4ECE-B394-8CCFB10E5F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A97FC5B8-9AE7-4ECE-B394-8CCFB10E5F05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E6B71E1-49C1-4E22-ABA4-7F96D9138B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E6B71E1-49C1-4E22-ABA4-7F96D9138B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E6B71E1-49C1-4E22-ABA4-7F96D9138B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E6B71E1-49C1-4E22-ABA4-7F96D9138B06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF52EE2B-07ED-4AD0-B02B-4394FFE787CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF52EE2B-07ED-4AD0-B02B-4394FFE787CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF52EE2B-07ED-4AD0-B02B-4394FFE787CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF52EE2B-07ED-4AD0-B02B-4394FFE787CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
