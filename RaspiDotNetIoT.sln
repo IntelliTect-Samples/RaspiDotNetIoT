@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pi.Web", "Pi.Web\Pi.Web.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pi.IO", "Pi.IO\Pi.IO.csproj", "{EF52EE2B-07ED-4AD0-B02B-4394FFE787CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cloud", "Cloud", "{BF738FB9-BF78-493C-89B2-A93B89BBABDC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pi", "Pi", "{31A1DD7C-44D1-4258-8A7B-7888D045E2B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +34,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A97FC5B8-9AE7-4ECE-B394-8CCFB10E5F05} = {BF738FB9-BF78-493C-89B2-A93B89BBABDC}
+		{0E6B71E1-49C1-4E22-ABA4-7F96D9138B06} = {31A1DD7C-44D1-4258-8A7B-7888D045E2B8}
+		{EF52EE2B-07ED-4AD0-B02B-4394FFE787CA} = {31A1DD7C-44D1-4258-8A7B-7888D045E2B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {005CBE2F-588B-44D5-83A7-8B9C1263E810}
