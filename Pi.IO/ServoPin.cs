@@ -17,6 +17,8 @@ namespace Pi.IO
         const int _ServoRegisterMinPulse = 25;  // Min pulse length out of 2000
         const int _ServoRegisterMaxPulse = 110;  // Max pulse length out of 2000
 
+        private int _CurrentPwmRegister = 0;
+
         public ServoPin(BcmPin bcmPin)
         {
             _Pin = (GpioPin)UnoPi.Gpio[bcmPin];
@@ -24,7 +26,9 @@ namespace Pi.IO
             _Pin.PinMode = GpioPinDriveMode.PwmOutput;
             _Pin.PwmMode = PwmMode.MarkSign;
             _Pin.PwmClockDivisor = _ServoClockDivisor;
-            _Pin.PwmRange = _ServoPWMRange; 
+            _Pin.PwmRange = _ServoPWMRange;
+            WriteAngle(90); //set default angle
+            
         }
 
         public void WriteAngle(int angle) {
@@ -34,8 +38,8 @@ namespace Pi.IO
             if (angle > _ServoAngleMax || angle < _ServoAngleMin) return;
 
             _Pin.PwmRegister = (int)((double)angle / (double)_ServoAngleMax * (double)(_ServoRegisterMaxPulse-_ServoRegisterMinPulse)) + _ServoRegisterMinPulse;
-
-            Console.WriteLine(_Pin.PwmRegister);
+            
+            Console.WriteLine(_Pin.PwmRegister);            
         }
 
         public void WritePwm(int pwm)
@@ -49,5 +53,22 @@ namespace Pi.IO
             _Pin.PinMode = GpioPinDriveMode.Input;
         }
 
+        internal void IncreasePwmPulse(int increasePulse)
+        {
+            int newPulse = _Pin.PwmRegister+increasePulse;
+
+            if (newPulse > _ServoRegisterMaxPulse || newPulse < _ServoRegisterMinPulse) return;
+
+            WritePwm(newPulse);
+        }
+
+        internal void DecreasePwmPulse(int decreasePulse)
+        {
+            int newPulse = _Pin.PwmRegister - decreasePulse;
+
+            if (newPulse > _ServoRegisterMaxPulse || newPulse < _ServoRegisterMinPulse) return;
+
+            WritePwm(newPulse);
+        }
     }
 }
