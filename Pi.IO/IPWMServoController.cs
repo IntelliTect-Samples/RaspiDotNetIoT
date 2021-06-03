@@ -1,16 +1,13 @@
-﻿using System;
-using Unosquare.RaspberryIO.Abstractions;
-using Unosquare.WiringPi;
-
+﻿
 namespace Pi.IO
 {
     public interface IPWMServoController
     {
-        void WritePWM();
-        void ReadPWM();
+        void WritePwm(int pwm);
+        void ReadPwm();
         /// <summary>
         /// Allow for mocking a Gpiopin for testing your hardware code
         /// </summary>
-        public IUnoGpioPin GpioPin { set; }
+        //public IUnoGpioPin GpioPin { set; }
     }
 }
