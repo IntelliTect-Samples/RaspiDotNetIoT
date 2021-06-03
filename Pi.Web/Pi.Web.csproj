@@ -8,6 +8,10 @@
 	  <SshDeployPassword>raspberry</SshDeployPassword>
 
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pi.IO\Pi.IO.csproj" />
+  </ItemGroup>
 	
 
 </Project>

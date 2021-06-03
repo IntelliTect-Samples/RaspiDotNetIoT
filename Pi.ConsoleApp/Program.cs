@@ -20,9 +20,10 @@ namespace Pi.ConsoleApp
         /// <param name="g">get pwm value</param>
         /// <param name="angle">angle value to set</param>
         /// <param name="pwm">pwm value to set</param>
-        /// <param name="buttons">listen for button events/param>
+        /// <param name="ub">listen for button events with UnoSquare GPIO/param>
+        /// <param name="mb">listen for button events with Microsoft GPIO/param>
         /// 
-        public static void Main(bool s = false, bool g = false, int angle = -1, int pwm = -1, bool buttons = false)
+        public static void Main(bool s = false, bool g = false, int angle = -1, int pwm = -1, bool ub = false, bool mb = false)
         {
             // Before start using RaspberryIO, you must initialize Pi class (bootstrapping process)
             // with the valid Abstractions implementation, in order to let Pi know what implementation is going to use:
@@ -33,7 +34,8 @@ namespace Pi.ConsoleApp
             if (s) Sweep(servoController);
             if (angle != -1) SetAngle(angle, servoController);
             if (pwm != -1) SetPwm(pwm, servoController);
-            if (buttons) Buttons(servoController);
+            if (ub) UnoSquareButtons(servoController);
+            if (mb) MicrosoftButtons(servoController);
 
         }
 
@@ -76,23 +78,44 @@ namespace Pi.ConsoleApp
 
         }
 
-        private static void Buttons(ServoController servoController)
+        private static void UnoSquareButtons(ServoController servoController)
         {
+            //if using UnoSquare
             var UP_PIN = BcmPin.Gpio23;
             var DOWN_PIN = BcmPin.Gpio24;
-            var cancellationTokenSource = new CancellationTokenSource();
-            Task.Factory.StartNew(() => servoController.UseButtons(UP_PIN,DOWN_PIN, cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
+
+            servoController.ListenForButtons(UP_PIN, DOWN_PIN);
             Console.WriteLine("enter q to quit");
 
             while (true) {
                var input = Console.ReadLine();
                if (input.Contains("q")) break;
+            }          
+        }
+
+        private static void MicrosoftButtons(ServoController servoController)
+        {
+            //if using UnoSquare
+            /*var UP_PIN = BcmPin.Gpio23;
+            var DOWN_PIN = BcmPin.Gpio24;*/
+
+            //if using Microsoft Gpio
+            int UP_PIN = 23;
+            int DOWN_PIN = 24;
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            Task.Factory.StartNew(() => servoController.ListenForButtonsMicrosoftGpio(UP_PIN, DOWN_PIN, cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
+            Console.WriteLine("enter q to quit");
+
+            while (true)
+            {
+                var input = Console.ReadLine();
+                if (input.Contains("q")) break;
             }
+
+            //Microsoft
             cancellationTokenSource.Cancel();
-
             Thread.Sleep(2000);
-
-            
         }
     }
 }
