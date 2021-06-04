@@ -18,18 +18,18 @@ namespace Pi.IO
             ServoPin = new ServoPin(bcmPin);
         }
 
-        public string ReadPwm()
+        public int ReadPwm()
         {
-            return $"{ServoPin._Pin.PwmRegister}";
+            return ServoPin._Pin.PwmRegister;
         }
         public void WritePwm(int pwm)
         {
             ServoPin.WritePwm(pwm);
         }
 
-        public void ReadAngle(int angle)
+        public int ReadAngle()
         {
-            ServoPin.WriteAngle(angle);
+            return ServoPin._Pin.PwmRegister;
         }
 
         public void WriteAngle(int angle)

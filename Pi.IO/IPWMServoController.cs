@@ -10,13 +10,13 @@ namespace Pi.IO
     public interface IPWMServoController: IDisposable
     {
         void WritePwm(int pwm);
-        string ReadPwm();
+        int ReadPwm();
         /// <summary>
         /// Allow for mocking a Gpiopin for testing your hardware code
         /// </summary>
         //public IUnoGpioPin GpioPin { set; }
 
-        public void ReadAngle(int angle);
+        public int ReadAngle();
         public void WriteAngle(int angle);
 
         public void TurnOff();

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pi.IO;
+using Pi.Web.HubConnections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,14 @@ namespace Pi.Web
     {
         CancellationTokenSource _ButtonListenerCancellationTokenSource = new CancellationTokenSource();
         IO.IPWMServoController _PWMServoController;
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -56,6 +66,17 @@ namespace Pi.Web
                     await context.Response.WriteAsync("Connected to RasPi Servo Server.");
                 });
             });
+
+
+            string hubUrl = Configuration.GetValue<string>("CloudToPiHubUrlProd");
+
+#if DEBUG
+            hubUrl = Configuration.GetValue<string>("CloudToPiHubUrlDev");
+#endif
+
+            CloudToPiHubConnection.Initalize(hubUrl, _PWMServoController);
+
+
         }
 
         private void OnShutdown()
