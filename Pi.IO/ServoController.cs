@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Unosquare.RaspberryIO.Abstractions;
@@ -12,6 +14,16 @@ namespace Pi.IO
     {
         public ServoPin ServoPin { set; private get; }
         // GpioPin GpioPin = UnoPi.Gpio[BcmPin.Gpio24] as GpioPin;
+        private int _CurrentAngle = 0;
+        public int CurrentAngle
+        {
+            get { return _CurrentAngle; }
+            set
+            {
+                if (_CurrentAngle != value) _CurrentAngle = value;
+                OnPropertyChanged(nameof(CurrentAngle));
+            }
+        }
 
         public ServoController(BcmPin bcmPin)
         {
@@ -35,19 +47,23 @@ namespace Pi.IO
         public void WriteAngle(int angle)
         {
             ServoPin.WriteAngle(angle);
+            CurrentAngle = ReadAngle();
         }
 
-        public void IncreasePulse(int amount =0)
+        public void IncreasePulse(int amount = 0)
         {
             Console.WriteLine("Increase pulse");
             ServoPin.IncreasePwmPulse(amount);
-            
-        }
+            CurrentAngle = ReadAngle();
 
-        public void DecreasePulse(int amount =10)
+
+        }
+        
+        public void DecreasePulse(int amount = 10)
         {
             Console.WriteLine("decrease pulse");
-            ServoPin.DecreasePwmPulse(amount);  
+            ServoPin.DecreasePwmPulse(amount);
+            CurrentAngle = ReadAngle();
         }
 
         public void TurnOff()
@@ -58,7 +74,8 @@ namespace Pi.IO
                 gpioController.ClosePin(upPinGpioNum);
                 gpioController.ClosePin(downPinGpioNum);
             }
-            catch (Exception e) { //if closing fails we dont mind (maybe UnoSqaure was used instead of Microsoft.Gpio)
+            catch (Exception e)
+            { //if closing fails we dont mind (maybe UnoSqaure was used instead of Microsoft.Gpio)
             }
             ServoPin.ReleasePin();
         }
@@ -84,14 +101,14 @@ namespace Pi.IO
             gpioController.RegisterCallbackForPinValueChangedEvent(upPinGpioNum, MicrosoftGpio.PinEventTypes.Rising, UpPinEventHandler);
             gpioController.RegisterCallbackForPinValueChangedEvent(downPinGpioNum, MicrosoftGpio.PinEventTypes.Rising, DownPinEventHandler);
 
-              var checkForCancelationInterval = new TimeSpan(0, 0, 1);
-              while (!cancellationToken.IsCancellationRequested)
-              {
-                  Console.WriteLine("listening...");
-                  await Task.Delay(checkForCancelationInterval);
-              }
+            var checkForCancelationInterval = new TimeSpan(0, 0, 1);
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                Console.WriteLine("listening...");
+                await Task.Delay(checkForCancelationInterval);
+            }
 
-              Console.WriteLine("UseButtons listening task canceled");
+            Console.WriteLine("UseButtons listening task canceled");
 
         }
 
@@ -119,6 +136,7 @@ namespace Pi.IO
         {
             Console.WriteLine("Increase pulse");
             ServoPin.IncreasePwmPulse(10);
+            CurrentAngle = ReadAngle();
             Thread.Sleep(100);
         }
 
@@ -126,6 +144,7 @@ namespace Pi.IO
         {
             Console.WriteLine("decrease pulse");
             ServoPin.DecreasePwmPulse(10);
+            CurrentAngle = ReadAngle();
             Thread.Sleep(100);
         }
 
@@ -133,12 +152,26 @@ namespace Pi.IO
         {
             Console.WriteLine("Increase pulse");
             ServoPin.IncreasePwmPulse(10);
+            CurrentAngle = ReadAngle();
         }
 
         public void DownPinEventHandler(object sender, MicrosoftGpio.PinValueChangedEventArgs pinValueChangedEventArgs)
         {
             Console.WriteLine("decrease pulse");
             ServoPin.DecreasePwmPulse(10);
+            CurrentAngle = ReadAngle();
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }

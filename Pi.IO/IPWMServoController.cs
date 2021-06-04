@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Unosquare.RaspberryIO.Abstractions;
@@ -7,8 +8,9 @@ using MicrosoftGpio = System.Device.Gpio;
 
 namespace Pi.IO
 {
-    public interface IPWMServoController: IDisposable
+    public interface IPWMServoController: IDisposable, INotifyPropertyChanged 
     {
+        public int CurrentAngle { get; set; }
         void WritePwm(int pwm);
         int ReadPwm();
         /// <summary>

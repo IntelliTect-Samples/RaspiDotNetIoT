@@ -6,11 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pi.IO;
 using Pi.Web.HubConnections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Unosquare.RaspberryIO.Abstractions;
 using Unosquare.WiringPi;
 using UnoPi = Unosquare.RaspberryIO.Pi;
@@ -35,14 +31,19 @@ namespace Pi.Web
         {
             services.AddControllers();
 
-            UnoPi.Init<BootstrapWiringPi>();
+#if LOCALDEBUG
+            _PWMServoController = new MockServoController(BcmPin.Gpio19);
+#else
+
+            UnoPi.Init<BootstrapWiringPi>(); 
             _PWMServoController = new ServoController(BcmPin.Gpio19);
+#endif
 
             var UP_PIN = BcmPin.Gpio23;
             var DOWN_PIN = BcmPin.Gpio24;
             _PWMServoController.ListenForButtons(UP_PIN, DOWN_PIN);
 
-            services.AddSingleton<IO.IPWMServoController>((s) =>_PWMServoController);
+            services.AddSingleton<IO.IPWMServoController>((s) => _PWMServoController);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,16 +68,10 @@ namespace Pi.Web
                 });
             });
 
+            // string hubUrl = Configuration.GetValue<string>("CloudHubUrlProd");
+            string hubUrl = Configuration.GetValue<string>("CloudHubUrlDev");
 
-            string hubUrl = Configuration.GetValue<string>("CloudToPiHubUrlProd");
-
-#if DEBUG
-            hubUrl = Configuration.GetValue<string>("CloudToPiHubUrlDev");
-#endif
-
-            CloudToPiHubConnection.Initalize(hubUrl, _PWMServoController);
-
-
+            CloudHubConnection.Initalize(hubUrl, _PWMServoController);
         }
 
         private void OnShutdown()

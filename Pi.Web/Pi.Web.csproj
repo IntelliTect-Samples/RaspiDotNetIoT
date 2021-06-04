@@ -6,7 +6,18 @@
 	  <SshDeployTargetPath>/home/pi/Dotnet</SshDeployTargetPath>
 	  <SshDeployUsername>pi</SshDeployUsername>
 	  <SshDeployPassword>raspberry</SshDeployPassword>
+	  <Configurations>Debug;Release;LocalDebug</Configurations>
 
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LocalDebug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="HubConnections\CloudToPiHubConnection.cs">
+    <Compile Update="HubConnections\CloudHubConnection.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

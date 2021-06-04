@@ -8,6 +8,7 @@
 	  <SshDeployUsername>pi</SshDeployUsername>
 	  <SshDeployPassword>raspberry</SshDeployPassword>
 	  <SshDeployExecutePermission>true</SshDeployExecutePermission>
+	  <Configurations>Debug;Release;LocalDebug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

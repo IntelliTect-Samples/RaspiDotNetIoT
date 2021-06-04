@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SignalRChat.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,22 @@ namespace Cloud.WebApp
             {
                 configuration.RootPath = "ClientApp";
             });
+
+            #region SignalR
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+            })
+          .AddJsonProtocol(options =>
+          {
+              options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+          });
+
+            services.AddSignalR().AddHubOptions<CloudHub>(options =>
+            {
+                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
+            });
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +64,7 @@ namespace Cloud.WebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<CloudHub>($"/{nameof(CloudHub)}");
             });
 
             app.UseSpa(spa =>
