@@ -25,7 +25,7 @@ namespace SignalRChat.Hubs
         }
 
         public async Task SetDegree(int degree)
-        {           
+        {
             await Clients.Group(Pi_CLIENT_GROUP_NAME).SendAsync("Set_Degree", degree);
         }
 
@@ -36,7 +36,8 @@ namespace SignalRChat.Hubs
 
         public async Task DegreeStatus(int degree)
         {
-           await Clients.Group(WEB_APP_CLIENT_GROUP_NAME).SendAsync("Degree_Status", degree);
+            await Clients.Group(WEB_APP_CLIENT_GROUP_NAME).SendAsync("Degree_Status", degree);
+            await Clients.All.SendAsync("Degree_Status", degree);
             Console.WriteLine($"Degree Status: {degree}");
         }
     }

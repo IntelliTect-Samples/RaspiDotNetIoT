@@ -1,53 +1,69 @@
 <template>
-    <h1 id="tableLabel">Weather forecast</h1>
+    
 
-    <p>This component demonstrates fetching data from the server.</p>
+    <p>This component demonstrates real-time iot.</p>
 
     <p v-if="!forecasts"><em>Loading...</em></p>
 
-    <table class='table table-striped' aria-labelledby="tableLabel" v-if="forecasts">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="forecast of forecasts" v-bind:key="forecast">
-                <td>{{ forecast.date }}</td>
-                <td>{{ forecast.temperatureC }}</td>
-                <td>{{ forecast.temperatureF }}</td>
-                <td>{{ forecast.summary }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <h1>Servo Angle</h1>
+
+    <p>Enter Angle</p>
+
+    <input v-model="degree" type="text" placeholder="0-180">
+
+    <button class="btn btn-primary" @click="sendDegree">Send</button>
+
+    <p>CurrentDegree: {{ currentDegree }}</p>
 </template>
 
 
 <script>
-    import axios from 'axios'
+    
+    import signalR from '@microsoft/signalr'
     export default {
         name: "FetchData",
         data() {
             return {
-                forecasts: []
+                degree: 0,
+                currentDegree: 0,
+            /*eslint no-undef: "warn"*/
+                connection: null
             }
         },
         methods: {
-            getWeatherForecasts() {
-                axios.get('/weatherforecast')
-                    .then((response) => {
-                        this.forecasts =  response.data;
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
+            async sendDegree() {
+                try {
+                    await this.connection.invoke("SetDegree", this.degree);
+                } catch (err) {
+                    console.error(err);
+                }
             }
         },
         mounted() {
-            this.getWeatherForecasts();
+           
+
+            this.connection = new signalR.HubConnectionBuilder()
+                .withUrl("/cloudhub")
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            async function start() {
+                try {
+                    await this.connection.start();
+                    console.log("SignalR Connected.");
+                } catch (err) {
+                    console.log(err);
+                    setTimeout(start, 5000);
+                }
+            }
+
+            
+
+            this.connection.onclose(start);
+
+            // Start the connection.
+            start();
         }
     }
 </script>
