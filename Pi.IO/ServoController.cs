@@ -25,6 +25,9 @@ namespace Pi.IO
             }
         }
 
+        const int _ServoAngleMin = 0;  // Angle corresponding to _ServoRegisterMinPulse
+        const int _ServoAngleMax = 180;  // Angle corresponding to _ServoRegisterMaxPulse
+
         public ServoController(BcmPin bcmPin)
         {
             ServoPin = new ServoPin(bcmPin);
@@ -41,29 +44,40 @@ namespace Pi.IO
 
         public int ReadAngle()
         {
-            return ServoPin._Pin.PwmRegister;
+            double percentagePwm = (ServoPin._Pin.PwmRegister- ServoPin._ServoRegisterMinPulse) / (double)(ServoPin._ServoRegisterMaxPulse - ServoPin._ServoRegisterMinPulse);
+            int angle = _ServoAngleMax - (int)(_ServoAngleMax * percentagePwm);
+            
+            return angle;
+            
         }
 
         public void WriteAngle(int angle)
-        {
-            ServoPin.WriteAngle(angle);
+        {      
+            Console.WriteLine("writing angle: " + angle);
+            if (angle > _ServoAngleMax || angle < _ServoAngleMin) return;
+
+            int invertAngle = _ServoAngleMax - angle;
+            int newPwmRegister = (int)((double)invertAngle / (double)_ServoAngleMax * (double)(ServoPin._ServoRegisterMaxPulse - ServoPin._ServoRegisterMinPulse)) + ServoPin._ServoRegisterMinPulse;
+
+            ServoPin.WritePwm(newPwmRegister);
             CurrentAngle = ReadAngle();
         }
 
-        public void IncreasePulse(int amount = 0)
+        public void DecreaseAngle(int amount = 5)
         {
-            Console.WriteLine("Increase pulse");
+            Console.WriteLine("decrease Angle");
             ServoPin.IncreasePwmPulse(amount);
             CurrentAngle = ReadAngle();
-
+            Console.WriteLine("angle: " + CurrentAngle);
 
         }
-        
-        public void DecreasePulse(int amount = 10)
+
+        public void IncreaseAngle(int amount = 5)
         {
-            Console.WriteLine("decrease pulse");
+            Console.WriteLine("increase angle");
             ServoPin.DecreasePwmPulse(amount);
             CurrentAngle = ReadAngle();
+            Console.WriteLine("angle: " + CurrentAngle);
         }
 
         public void TurnOff()
@@ -134,16 +148,16 @@ namespace Pi.IO
 
         public void UpPinEventHandler()
         {
-            Console.WriteLine("Increase pulse");
-            ServoPin.IncreasePwmPulse(10);
+            Console.WriteLine("up button pressed");
+            IncreaseAngle(3);
             CurrentAngle = ReadAngle();
             Thread.Sleep(100);
         }
 
         public void DownPinEventHandler()
         {
-            Console.WriteLine("decrease pulse");
-            ServoPin.DecreasePwmPulse(10);
+            Console.WriteLine("down button pressed");
+            DecreaseAngle(3);
             CurrentAngle = ReadAngle();
             Thread.Sleep(100);
         }
@@ -151,14 +165,14 @@ namespace Pi.IO
         public void UpPinEventHandler(object sender, MicrosoftGpio.PinValueChangedEventArgs pinValueChangedEventArgs)
         {
             Console.WriteLine("Increase pulse");
-            ServoPin.IncreasePwmPulse(10);
+            IncreaseAngle(10);
             CurrentAngle = ReadAngle();
         }
 
         public void DownPinEventHandler(object sender, MicrosoftGpio.PinValueChangedEventArgs pinValueChangedEventArgs)
         {
             Console.WriteLine("decrease pulse");
-            ServoPin.DecreasePwmPulse(10);
+           DecreaseAngle(10);
             CurrentAngle = ReadAngle();
         }
 

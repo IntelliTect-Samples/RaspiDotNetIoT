@@ -1,16 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using SignalRChat.Hubs;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using VueCliMiddleware;
 
 namespace Cloud.WebApp
@@ -35,19 +29,16 @@ namespace Cloud.WebApp
             });
 
             #region SignalR
-            services.AddSignalR(hubOptions =>
-            {
-                hubOptions.EnableDetailedErrors = true;
-            })
-          .AddJsonProtocol(options =>
-          {
-              options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-          });
 
             services.AddSignalR().AddHubOptions<CloudHub>(options =>
             {
-                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
-            });
+                options.KeepAliveInterval = TimeSpan.FromSeconds(14);
+                options.EnableDetailedErrors = true;
+            })
+           .AddJsonProtocol(options =>
+                {
+                    options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+                });
             #endregion
         }
 

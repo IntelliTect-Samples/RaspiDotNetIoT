@@ -67,12 +67,12 @@ namespace Pi.IO
             return new Task(()=>Console.WriteLine());
         }
 
-        public void IncreasePulse(int amount = 10)
+        public void IncreaseAngle(int amount = 10)
         {
             CurrentAngle += amount;
         }
 
-        public void DecreasePulse(int amount = 10)
+        public void DecreaseAngle(int amount = 10)
         {
             CurrentAngle -= amount;
         }

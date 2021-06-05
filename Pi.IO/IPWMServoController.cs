@@ -27,9 +27,9 @@ namespace Pi.IO
 
         public Task ListenForButtonsMicrosoftGpio(int upGpioPin, int downGpioPin, CancellationToken cancellationToken);
 
-        public void IncreasePulse(int amount = 10);
+        public void IncreaseAngle(int amount = 10);
 
-        public void DecreasePulse(int amount =10);
+        public void DecreaseAngle(int amount =10);
 
     }
 }

@@ -33,25 +33,26 @@ namespace Pi.Web.HubConnections
                 await _CloudHubConnection.StartAsync();
             };
 
-            _CloudHubConnection.StartAsync().Wait();
+            _CloudHubConnection.StartAsync();
 
-            _CloudHubConnection.InvokeAsync("JoinPiClientGroup");
+            
         }
 
         private static void AddMethods()
         {
             _CloudHubConnection.On("Increase_Angle", IncreaseAngle);
             _CloudHubConnection.On<int>("Set_Degree", SetDegree);
+            _CloudHubConnection.On("Connected", OnConnected);
         }
 
         public static void IncreaseAngle()
         {
-            _IOServoController.IncreasePulse();
+            _IOServoController.IncreaseAngle();
         }
 
         public static void DecreaseAngle()
         {
-            _IOServoController.DecreasePulse();
+            _IOServoController.DecreaseAngle();
         }
 
 
@@ -72,12 +73,11 @@ namespace Pi.Web.HubConnections
         }
         public static void DegreeChange()
         {
-           // _CloudHubConnection.StartAsync();
             _CloudHubConnection.InvokeAsync("DegreeStatus", _IOServoController.ReadAngle());
-       /*     HttpWebRequest myReq =
-(HttpWebRequest)WebRequest.Create("https://10.10.8.127:45455");
-            myReq.ServerCertificateValidationCallback = (object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
-            var res = myReq.GetResponse();*/
+        }
+
+        public static void OnConnected() {
+            _CloudHubConnection.InvokeAsync("JoinPiClientGroup");
         }
 
        
