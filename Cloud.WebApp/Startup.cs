@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SignalRChat.Hubs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using VueCliMiddleware;
@@ -30,6 +31,7 @@ namespace Cloud.WebApp
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp";
+                //configuration.RootPath = Path.Combine("ClientApp", "dist");
             });
 
             #region SignalR
@@ -59,7 +61,7 @@ namespace Cloud.WebApp
 
             app.UseRouting();
             app.UseSpaStaticFiles();
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

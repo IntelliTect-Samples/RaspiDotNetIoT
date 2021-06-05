@@ -11,7 +11,7 @@
 
     <input v-model="degree" type="text" placeholder="0-180">
 
-    <button class="btn btn-primary" @click="sendDegree">Send</button>
+    <button class="btn btn-primary" @click="setDegree">Set</button>
 
     <p>CurrentDegree: {{ currentDegree }}</p>
 </template>
@@ -19,51 +19,40 @@
 
 <script>
     
-    import signalR from '@microsoft/signalr'
+    
     export default {
         name: "FetchData",
         data() {
             return {
                 degree: 0,
-                currentDegree: 0,
-            /*eslint no-undef: "warn"*/
-                connection: null
+                currentDegree: 0
             }
         },
+        created() {
+            // Listen to "degree changes" coming from SignalR events that are on the Vue event bus now
+            this.$cloudHub.$on('degree-status', this.degreeChanged)
+            
+        },
         methods: {
-            async sendDegree() {
+            async setDegree() {
                 try {
-                    await this.connection.invoke("SetDegree", this.degree);
+                    await this.$cloudHub.setDegree(this.degree);
                 } catch (err) {
                     console.error(err);
                 }
+            },
+            degreeChanged({ newDegree }) {
+                this.degree = newDegree;
             }
         },
         mounted() {
            
 
-            this.connection = new signalR.HubConnectionBuilder()
-                .withUrl("/cloudhub")
-                .withAutomaticReconnect()
-                .configureLogging(signalR.LogLevel.Information)
-                .build();
-
-            async function start() {
-                try {
-                    await this.connection.start();
-                    console.log("SignalR Connected.");
-                } catch (err) {
-                    console.log(err);
-                    setTimeout(start, 5000);
-                }
-            }
-
-            
-
-            this.connection.onclose(start);
-
-            // Start the connection.
-            start();
-        }
+           
+        },
+        beforeDestroy() {
+            // Make sure to cleanup SignalR event handlers when removing the component
+            this.$cloudHub.$off('degree-status', this.onScoreChanged)
+        },
     }
 </script>
