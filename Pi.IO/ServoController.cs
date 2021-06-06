@@ -89,7 +89,7 @@ namespace Pi.IO
                 gpioController.ClosePin(downPinGpioNum);
             }
             catch (Exception e)
-            { //if closing fails we dont mind (maybe UnoSqaure was used instead of Microsoft.Gpio)
+            { //if closing fails we dont mind (maybe UnoSquare library was used instead of Microsoft.Gpio).
             }
             ServoPin.ReleasePin();
         }

@@ -25,6 +25,11 @@ namespace Pi.ConsoleApp
         /// 
         public static void Main(bool s = false, bool g = false, int angle = -1, int pwm = -1, bool ub = false, bool mb = false)
         {
+            Console.WriteLine(@"enter ""y"" once debugger is attached to continue...");
+            while (true) { // so we have time to attach the debugger 
+                var proceed = Console.ReadLine();
+                if (proceed == "y") break;
+            }
             // Before start using RaspberryIO, you must initialize Pi class (bootstrapping process)
             // with the valid Abstractions implementation, in order to let Pi know what implementation is going to use:
             UnoPi.Init<BootstrapWiringPi>();

@@ -5,7 +5,7 @@ using UnoPi = Unosquare.RaspberryIO.Pi;
 
 namespace Pi.IO
 {
-    public class ServoPin 
+    public class ServoPin
     {
         public GpioPin _Pin;
         public const int _ServoClockDivisor = 384; // 19.2MHz/384 = 50Hz
@@ -26,28 +26,35 @@ namespace Pi.IO
             _Pin.PwmClockDivisor = _ServoClockDivisor;
             _Pin.PwmRange = _ServoPWMRange;
             WritePwm((_ServoRegisterMaxPulse + _ServoRegisterMinPulse) / 2); //set to middle
-            
+
         }
 
-        public void WritePwm(int pwm)
+        public void WritePwm(int pwmPulse)
         {
-            _Pin.PwmRegister = pwm;
+            if (pwmPulse < _ServoRegisterMinPulse || pwmPulse > _ServoRegisterMaxPulse)
+            {
+                Console.WriteLine("pwm pulse out of range: " + pwmPulse);
+                return;
+            }
 
-            Console.WriteLine("wrote pwm: "+_Pin.PwmRegister);
+            _Pin.PwmRegister = pwmPulse;
+
+            Console.WriteLine("wrote pwm: " + _Pin.PwmRegister);
         }
 
-        public void ReleasePin() {
+        public void ReleasePin()
+        {
             _Pin.PinMode = GpioPinDriveMode.Input;
         }
 
         internal void IncreasePwmPulse(int increasePulse)
         {
-            int newPulse = _Pin.PwmRegister+increasePulse;
+            int newPulse = _Pin.PwmRegister + increasePulse;
 
             if (newPulse > _ServoRegisterMaxPulse) { WritePwm(_ServoRegisterMaxPulse); return; }
 
             WritePwm(newPulse);
-           
+
         }
 
         internal void DecreasePwmPulse(int decreasePulse)
