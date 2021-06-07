@@ -61,7 +61,7 @@ namespace Pi.ConsoleApp
             var DOWN_PIN = BcmPin.Gpio24;
             servoController.ListenForButtons(UP_PIN, DOWN_PIN);
 
-            CloudHubConnection.Initalize(url, servoController);
+            CloudHubConnection.Initialize(url, servoController);
 
         }
 

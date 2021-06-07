@@ -7,16 +7,13 @@ namespace SignalRChat.Hubs
 {
     public class CloudHub : Hub
     {
-        static int _CurrentDegree = 42;
-        public async Task JoinRoom(string roomName)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-        }
+        static int _CurrentDegree = -1;
 
         const string WEB_APP_CLIENT_GROUP_NAME = "Web_App_Client";
         public async Task JoinWebAppClientGroup()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, WEB_APP_CLIENT_GROUP_NAME);
+            await Clients.Client(Context.ConnectionId).SendAsync("Degree_Status", _CurrentDegree); // give the client the current value
         }
 
         const string Pi_CLIENT_GROUP_NAME = "Pi_Client";
@@ -25,16 +22,13 @@ namespace SignalRChat.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, Pi_CLIENT_GROUP_NAME);
         }
 
+        //WebApp Client Can call this method 
         public async Task SetDegree(int degree)
         {            
             await Clients.Group(Pi_CLIENT_GROUP_NAME).SendAsync("Set_Degree", degree);
         }
 
-        public async Task IncreaseAngle(int degree)
-        {
-            await Clients.Group(Pi_CLIENT_GROUP_NAME).SendAsync("Increase_Angle", degree);
-        }
-
+        //Pi.Console App can call this method
         public async Task DegreeStatus(int degree)
         {
             await Clients.Group(WEB_APP_CLIENT_GROUP_NAME).SendAsync("Degree_Status", degree);
@@ -52,14 +46,9 @@ namespace SignalRChat.Hubs
             // the connection is established; for example, in a JavaScript client,
             // the start().done callback is executed.
             
-            Clients.Client(Context.ConnectionId).SendAsync("Degree_Status", _CurrentDegree); // give the client the current value
+            
             Clients.Client(Context.ConnectionId).SendAsync("Connected"); // Tell The client they are connected
             return base.OnConnectedAsync();
-        }
-
-        public class Degree {         
-                [JsonProperty]
-                public int Value { get; set; }   
         }
 
     }

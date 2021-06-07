@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Pi.ConsoleApp
@@ -15,7 +11,7 @@ namespace Pi.ConsoleApp
         private static IO.IPWMServoController _IOServoController;
 
 
-        public static void Initalize(string hubURl, IO.IPWMServoController servoController)
+        public static void Initialize(string hubURl, IO.IPWMServoController servoController)
         {
             _IOServoController = servoController;
             _IOServoController.PropertyChanged += _IOServoController_PropertyChanged;
@@ -25,13 +21,13 @@ namespace Pi.ConsoleApp
                    .WithUrl(hubURl)
                    .Build();
 
-            AddMethods();
-
             _CloudHubConnection.Closed += async (error) =>
             {
                 await Task.Delay(new Random().Next(0, 5) * 1000);
                 await _CloudHubConnection.StartAsync();
             };
+
+            AddMethods();
 
             _CloudHubConnection.StartAsync();
 

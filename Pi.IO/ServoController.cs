@@ -26,7 +26,7 @@ namespace Pi.IO
         }
 
         const int _ServoAngleMin = 0;  // Angle corresponding to _ServoRegisterMinPulse
-        const int _ServoAngleMax = 180;  // Angle corresponding to _ServoRegisterMaxPulse
+        const int _ServoAngleMax = 150;  // Angle corresponding to _ServoRegisterMaxPulse
 
         public ServoController(BcmPin bcmPin)
         {
