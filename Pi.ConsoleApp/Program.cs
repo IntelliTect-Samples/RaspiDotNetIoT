@@ -11,25 +11,29 @@ namespace Pi.ConsoleApp
     public class Program
     {
 
-
-
         /// <summary>
         /// Console app for testing servo motor
         /// </summary>
-        /// <param name="s">sweep between 0 and 180 degrees, and then finish at 90</param>
+        /// <param name="s">sweep between 0 and 150 degrees, and then finish at 90</param>
         /// <param name="g">get pwm value</param>
         /// <param name="angle">angle value to set</param>
         /// <param name="pwm">pwm value to set</param>
         /// <param name="ub">listen for button events with UnoSquare GPIO/param>
         /// <param name="mb">listen for button events with Microsoft GPIO/param>
         /// 
-        public static void Main(bool s = false, bool g = false, int angle = -1, int pwm = -1, bool ub = false, bool mb = false, bool hub=false, string url = "http://10.10.8.129:45455/CloudHub")
+        public static void Main(bool s = false, bool g = false, int angle = -1, int pwm = -1, bool ub = false,
+            bool mb = false, bool hub=false, string url = "http://10.10.8.129:45455/CloudHub", bool debug=false )
         {
-            Console.WriteLine(@"enter ""y"" once debugger is attached to continue...");
-            while (true) { // so we have time to attach the debugger 
-                var proceed = Console.ReadLine();
-                if (proceed == "y") break;
+            if (debug)
+            {
+                Console.WriteLine(@"enter ""y"" once debugger is attached to continue...");
+                while (true)
+                { // so we have time to attach the debugger 
+                    var proceed = Console.ReadLine();
+                    if (proceed == "y") break;
+                }
             }
+
             // Before start using RaspberryIO, you must initialize Pi class (bootstrapping process)
             // with the valid Abstractions implementation, in order to let Pi know what implementation is going to use:
             UnoPi.Init<BootstrapWiringPi>();
