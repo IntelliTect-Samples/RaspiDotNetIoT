@@ -23,18 +23,23 @@ namespace SignalRChat.Hubs
         }
 
         //WebApp Client Can call this method 
-        public async Task SetDegree(int degree)
+        public async Task SetDegree_WebApp(int degree)
         {            
             await Clients.Group(Pi_CLIENT_GROUP_NAME).SendAsync("Set_Degree", degree);
         }
 
         //Pi.Console App can call this method
-        public async Task DegreeStatus(int degree)
+        public async Task SetDegree_Pi(int degree)
         {
             await Clients.Group(WEB_APP_CLIENT_GROUP_NAME).SendAsync("Degree_Status", degree);
-            await Clients.All.SendAsync("Degree_Status", degree);
             _CurrentDegree = degree;
             Console.WriteLine($"Degree Status: {degree}");
+        }
+
+        //WebApp can call this method
+        public async Task GetDegreeStatus()
+        {
+            await Clients.Group(WEB_APP_CLIENT_GROUP_NAME).SendAsync("Degree_Status", _CurrentDegree);
         }
 
         public override Task OnConnectedAsync()
@@ -45,8 +50,7 @@ namespace SignalRChat.Hubs
             // After the code in this method completes, the client is informed that
             // the connection is established; for example, in a JavaScript client,
             // the start().done callback is executed.
-            
-            
+                        
             Clients.Client(Context.ConnectionId).SendAsync("Connected"); // Tell The client they are connected
             return base.OnConnectedAsync();
         }

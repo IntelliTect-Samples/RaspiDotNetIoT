@@ -2,7 +2,6 @@
 import mitt from 'mitt';
 
 
-
 export default {
     install(app) {
 
@@ -30,27 +29,20 @@ export default {
             }
         }
 
-
         // Forward server side SignalR events through $questionHub, where components will listen to them
        connection.on('Degree_Status', (degree) => {
            emitter.emit('degree-status', degree )
         })
 
-        // client to server
-       // this.$emitter.on('joinWebAppClientGroup', () => 
-        //    connection.invoke('JoinWebAppClientGroup')
-       // )
-
         console.log(this.$emitter)
 
-        emitter.on('setDegree', value => {
-            let degree= value
-            
-            connection.invoke('SetDegree', degree)
+        emitter.on('set-degree', degree => {           
+            connection.invoke('SetDegree_WebApp', degree)
         })
 
-
-
+        emitter.on('get-degree', ()=> {           
+            connection.invoke('GetDegreeStatus')
+        })
 
         connection.onclose(start);
         // Start the connection.

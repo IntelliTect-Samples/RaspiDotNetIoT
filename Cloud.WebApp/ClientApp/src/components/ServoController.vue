@@ -69,26 +69,22 @@ export default {
   created() {
     // Listen to "degree changes" coming from SignalR events that are on the Vue event bus now
     this.$emitter.on("degree-status", this.degreeChanged);
+    this.$emitter.emit("get-degree");
   },
   methods: {
     async setDegree(degree) {
       try {
-        this.$emitter.emit("setDegree", parseInt(degree));
+        this.$emitter.emit("set-degree", parseInt(degree));
       } catch (err) {
         console.error(err);
       }
     },
     degreeChanged(newDegree) {
-      let previousDegree = this.currentDegree;
       this.currentDegree = newDegree;
-      this.clock(previousDegree, newDegree);
+      this.clock(newDegree);
     },
-    clock(previousDegree, currentDegree) {
-      let degree = currentDegree;
-      if (currentDegree < previousDegree) {
-        degree = degree * -1;
-      }
-
+    clock(degree) {
+   
       document.querySelector(".minute").style.transform = `rotate(${degree -
         90}deg)`;
     },

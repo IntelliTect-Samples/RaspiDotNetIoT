@@ -62,6 +62,7 @@ namespace Pi.ConsoleApp
             servoController.ListenForButtons(UP_PIN, DOWN_PIN);
 
             CloudHubConnection.Initialize(url, servoController);
+            servoController.WriteAngle(servoController.ReadAngle()); //give the hub the 
 
         }
 
