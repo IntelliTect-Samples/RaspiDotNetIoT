@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using SignalRChat.Hubs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VueCliMiddleware;
 
 namespace Cloud.WebApp
@@ -29,7 +26,31 @@ namespace Cloud.WebApp
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp";
+                //configuration.RootPath = Path.Combine("ClientApp", "dist");
             });
+
+            //so that we can use IIS and refer to the Website via the Host name of the computer versus the IP which might change.
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .AllowCredentials();
+            }));
+
+            #region SignalR
+
+            services.AddSignalR().AddHubOptions<CloudHub>(options =>
+            {
+                options.KeepAliveInterval = TimeSpan.FromSeconds(14);
+                options.EnableDetailedErrors = true;
+            })
+           .AddJsonProtocol(options =>
+                {
+                    options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+                });
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,11 +63,11 @@ namespace Cloud.WebApp
 
             app.UseRouting();
             app.UseSpaStaticFiles();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<CloudHub>($"/{nameof(CloudHub)}");
             });
 
             app.UseSpa(spa =>

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Cloud.WebApp</RootNamespace>
+    <Configurations>Debug;Release;LocalDebug</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -11,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
     <PackageReference Include="VueCliMiddleware" Version="3.0.0" />
   </ItemGroup>
 

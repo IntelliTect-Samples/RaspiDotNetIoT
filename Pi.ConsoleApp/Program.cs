@@ -23,8 +23,13 @@ namespace Pi.ConsoleApp
         /// <param name="ub">listen for button events with UnoSquare GPIO/param>
         /// <param name="mb">listen for button events with Microsoft GPIO/param>
         /// 
-        public static void Main(bool s = false, bool g = false, int angle = -1, int pwm = -1, bool ub = false, bool mb = false)
+        public static void Main(bool s = false, bool g = false, int angle = -1, int pwm = -1, bool ub = false, bool mb = false, bool hub=false, string url = "http://10.10.8.129:45455/CloudHub")
         {
+            Console.WriteLine(@"enter ""y"" once debugger is attached to continue...");
+            while (true) { // so we have time to attach the debugger 
+                var proceed = Console.ReadLine();
+                if (proceed == "y") break;
+            }
             // Before start using RaspberryIO, you must initialize Pi class (bootstrapping process)
             // with the valid Abstractions implementation, in order to let Pi know what implementation is going to use:
             UnoPi.Init<BootstrapWiringPi>();
@@ -36,6 +41,27 @@ namespace Pi.ConsoleApp
             if (pwm != -1) SetPwm(pwm, servoController);
             if (ub) UnoSquareButtons(servoController);
             if (mb) MicrosoftButtons(servoController);
+
+
+
+            if (hub) { InitializeHub(url, servoController); }
+
+            Console.WriteLine(@"enter ""q"" close app...");
+            while (true)
+            { // so we have time to attach the debugger 
+                var proceed = Console.ReadLine();
+                if (proceed == "q") break;
+            }
+
+        }
+
+        private static void InitializeHub(string url, ServoController servoController)
+        {
+            var UP_PIN = BcmPin.Gpio23;
+            var DOWN_PIN = BcmPin.Gpio24;
+            servoController.ListenForButtons(UP_PIN, DOWN_PIN);
+
+            CloudHubConnection.Initalize(url, servoController);
 
         }
 

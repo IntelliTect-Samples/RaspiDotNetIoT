@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Unosquare.RaspberryIO.Abstractions;
@@ -12,42 +14,70 @@ namespace Pi.IO
     {
         public ServoPin ServoPin { set; private get; }
         // GpioPin GpioPin = UnoPi.Gpio[BcmPin.Gpio24] as GpioPin;
+        private int _CurrentAngle = 0;
+        public int CurrentAngle
+        {
+            get { return _CurrentAngle; }
+            set
+            {
+                if (_CurrentAngle != value) _CurrentAngle = value;
+                OnPropertyChanged(nameof(CurrentAngle));
+            }
+        }
+
+        const int _ServoAngleMin = 0;  // Angle corresponding to _ServoRegisterMinPulse
+        const int _ServoAngleMax = 180;  // Angle corresponding to _ServoRegisterMaxPulse
 
         public ServoController(BcmPin bcmPin)
         {
             ServoPin = new ServoPin(bcmPin);
         }
 
-        public string ReadPwm()
+        public int ReadPwm()
         {
-            return $"{ServoPin._Pin.PwmRegister}";
+            return ServoPin._Pin.PwmRegister;
         }
         public void WritePwm(int pwm)
         {
             ServoPin.WritePwm(pwm);
         }
 
-        public void ReadAngle(int angle)
+        public int ReadAngle()
         {
-            ServoPin.WriteAngle(angle);
-        }
-
-        public void WriteAngle(int angle)
-        {
-            ServoPin.WriteAngle(angle);
-        }
-
-        public void IncreasePulse(int amount =0)
-        {
-            Console.WriteLine("Increase pulse");
-            ServoPin.IncreasePwmPulse(amount);
+            double percentagePwm = (ServoPin._Pin.PwmRegister- ServoPin._ServoRegisterMinPulse) / (double)(ServoPin._ServoRegisterMaxPulse - ServoPin._ServoRegisterMinPulse);
+            int angle = _ServoAngleMax - (int)(_ServoAngleMax * percentagePwm);
+            
+            return angle;
             
         }
 
-        public void DecreasePulse(int amount =10)
+        public void WriteAngle(int angle)
+        {      
+            Console.WriteLine("writing angle: " + angle);
+            if (angle > _ServoAngleMax || angle < _ServoAngleMin) return;
+
+            int invertAngle = _ServoAngleMax - angle;
+            int newPwmRegister = (int)((double)invertAngle / (double)_ServoAngleMax * (double)(ServoPin._ServoRegisterMaxPulse - ServoPin._ServoRegisterMinPulse)) + ServoPin._ServoRegisterMinPulse;
+
+            ServoPin.WritePwm(newPwmRegister);
+            CurrentAngle = ReadAngle();
+        }
+
+        public void DecreaseAngle(int amount = 5)
         {
-            Console.WriteLine("decrease pulse");
-            ServoPin.DecreasePwmPulse(amount);  
+            Console.WriteLine("decrease Angle");
+            ServoPin.IncreasePwmPulse(amount);
+            CurrentAngle = ReadAngle();
+            Console.WriteLine("angle: " + CurrentAngle);
+
+        }
+
+        public void IncreaseAngle(int amount = 5)
+        {
+            Console.WriteLine("increase angle");
+            ServoPin.DecreasePwmPulse(amount);
+            CurrentAngle = ReadAngle();
+            Console.WriteLine("angle: " + CurrentAngle);
         }
 
         public void TurnOff()
@@ -58,7 +88,8 @@ namespace Pi.IO
                 gpioController.ClosePin(upPinGpioNum);
                 gpioController.ClosePin(downPinGpioNum);
             }
-            catch (Exception e) { //if closing fails we dont mind (maybe UnoSqaure was used instead of Microsoft.Gpio)
+            catch (Exception e)
+            { //if closing fails we dont mind (maybe UnoSquare library was used instead of Microsoft.Gpio).
             }
             ServoPin.ReleasePin();
         }
@@ -84,14 +115,14 @@ namespace Pi.IO
             gpioController.RegisterCallbackForPinValueChangedEvent(upPinGpioNum, MicrosoftGpio.PinEventTypes.Rising, UpPinEventHandler);
             gpioController.RegisterCallbackForPinValueChangedEvent(downPinGpioNum, MicrosoftGpio.PinEventTypes.Rising, DownPinEventHandler);
 
-              var checkForCancelationInterval = new TimeSpan(0, 0, 1);
-              while (!cancellationToken.IsCancellationRequested)
-              {
-                  Console.WriteLine("listening...");
-                  await Task.Delay(checkForCancelationInterval);
-              }
+            var checkForCancelationInterval = new TimeSpan(0, 0, 1);
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                Console.WriteLine("listening...");
+                await Task.Delay(checkForCancelationInterval);
+            }
 
-              Console.WriteLine("UseButtons listening task canceled");
+            Console.WriteLine("UseButtons listening task canceled");
 
         }
 
@@ -117,28 +148,44 @@ namespace Pi.IO
 
         public void UpPinEventHandler()
         {
-            Console.WriteLine("Increase pulse");
-            ServoPin.IncreasePwmPulse(10);
+            Console.WriteLine("up button pressed");
+            IncreaseAngle(3);
+            CurrentAngle = ReadAngle();
             Thread.Sleep(100);
         }
 
         public void DownPinEventHandler()
         {
-            Console.WriteLine("decrease pulse");
-            ServoPin.DecreasePwmPulse(10);
+            Console.WriteLine("down button pressed");
+            DecreaseAngle(3);
+            CurrentAngle = ReadAngle();
             Thread.Sleep(100);
         }
 
         public void UpPinEventHandler(object sender, MicrosoftGpio.PinValueChangedEventArgs pinValueChangedEventArgs)
         {
             Console.WriteLine("Increase pulse");
-            ServoPin.IncreasePwmPulse(10);
+            IncreaseAngle(10);
+            CurrentAngle = ReadAngle();
         }
 
         public void DownPinEventHandler(object sender, MicrosoftGpio.PinValueChangedEventArgs pinValueChangedEventArgs)
         {
             Console.WriteLine("decrease pulse");
-            ServoPin.DecreasePwmPulse(10);
+           DecreaseAngle(10);
+            CurrentAngle = ReadAngle();
         }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }

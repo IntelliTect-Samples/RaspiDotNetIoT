@@ -34,7 +34,7 @@ namespace Pi.Web.Controllers
         [ProducesDefaultResponseType]
         public void Up()
         {
-            _IOServoController.IncreasePulse();
+            _IOServoController.IncreaseAngle();
         }
 
         [HttpGet("down")]
@@ -42,7 +42,7 @@ namespace Pi.Web.Controllers
         [ProducesDefaultResponseType]
         public void Down()
         {
-            _IOServoController.DecreasePulse();
+            _IOServoController.DecreaseAngle();
         }
     }
 }
