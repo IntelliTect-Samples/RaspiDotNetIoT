@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,16 @@ namespace Cloud.WebApp
                 //configuration.RootPath = Path.Combine("ClientApp", "dist");
             });
 
+            //so that we can use IIS and refer to the Website via the Host name of the computer versus the IP which might change.
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .AllowCredentials();
+            }));
+
             #region SignalR
 
             services.AddSignalR().AddHubOptions<CloudHub>(options =>
@@ -52,7 +63,6 @@ namespace Cloud.WebApp
 
             app.UseRouting();
             app.UseSpaStaticFiles();
-            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

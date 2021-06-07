@@ -41,7 +41,7 @@ namespace Pi.Web
 
             var UP_PIN = BcmPin.Gpio23;
             var DOWN_PIN = BcmPin.Gpio24;
-            _PWMServoController.ListenForButtons(UP_PIN, DOWN_PIN);
+            _PWMServoController.ListenForButtons(UP_PIN, DOWN_PIN); //listen for the physical buttons
 
             services.AddSingleton<IO.IPWMServoController>((s) => _PWMServoController);
         }

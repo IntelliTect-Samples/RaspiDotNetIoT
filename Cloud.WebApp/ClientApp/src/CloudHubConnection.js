@@ -9,7 +9,7 @@ export default {
         const emitter = mitt()
         app.config.globalProperties.$emitter = emitter
 
-        let hubUrl= 'http://10.42.0.165:45455/CloudHub'
+        let hubUrl= 'http://nanuk-pro:45455/CloudHub'
         let connection = null
 
         connection = new HubConnectionBuilder()
