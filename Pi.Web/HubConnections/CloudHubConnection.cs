@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace Pi.Web.HubConnections
+namespace Pi.ConsoleApp
 {
 
     public static class CloudHubConnection
@@ -15,23 +11,23 @@ namespace Pi.Web.HubConnections
         private static IO.IPWMServoController _IOServoController;
 
 
-        public static void Initalize(string hubURl, IO.IPWMServoController servoController)
+        public static void Initialize(string hubURl, IO.IPWMServoController servoController)
         {
             _IOServoController = servoController;
-            _IOServoController.PropertyChanged += _IOServoController_PropertyChanged;
+            _IOServoController.PropertyChanged += _ServoController_PropertyChanged;
 
             _CloudHubConnection = new HubConnectionBuilder()
                    .WithAutomaticReconnect()
                    .WithUrl(hubURl)
                    .Build();
 
-            AddMethods();
-
             _CloudHubConnection.Closed += async (error) =>
             {
                 await Task.Delay(new Random().Next(0, 5) * 1000);
                 await _CloudHubConnection.StartAsync();
             };
+
+            AddMethods();
 
             _CloudHubConnection.StartAsync();
 
@@ -40,19 +36,8 @@ namespace Pi.Web.HubConnections
 
         private static void AddMethods()
         {
-            _CloudHubConnection.On("Increase_Angle", IncreaseAngle);
             _CloudHubConnection.On<int>("Set_Degree", SetDegree);
             _CloudHubConnection.On("Connected", OnConnected);
-        }
-
-        public static void IncreaseAngle()
-        {
-            _IOServoController.IncreaseAngle();
-        }
-
-        public static void DecreaseAngle()
-        {
-            _IOServoController.DecreaseAngle();
         }
 
 
@@ -61,7 +46,7 @@ namespace Pi.Web.HubConnections
             _IOServoController.WriteAngle(angle);
         }
 
-        private static void _IOServoController_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private static void _ServoController_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -73,11 +58,12 @@ namespace Pi.Web.HubConnections
         }
         public static void DegreeChange()
         {
-            _CloudHubConnection.InvokeAsync("DegreeStatus", _IOServoController.ReadAngle());
+            _CloudHubConnection.InvokeAsync("SetDegree_Pi", _IOServoController.ReadAngle());
         }
 
         public static void OnConnected() {
             _CloudHubConnection.InvokeAsync("JoinPiClientGroup");
+            _CloudHubConnection.InvokeAsync("SetDegree_Pi", _IOServoController.ReadAngle()); //update the Hub with the current angle
         }
 
        
