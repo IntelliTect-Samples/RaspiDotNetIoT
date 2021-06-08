@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SignalRChat.Hubs;
 using System;
+using System.IO;
 using VueCliMiddleware;
 
 namespace Cloud.WebApp
@@ -24,12 +25,16 @@ namespace Cloud.WebApp
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
+                configuration.RootPath = Path.Combine("ClientApp", "dist");
+#if DEBUG
                 configuration.RootPath = "ClientApp";
-                //configuration.RootPath = Path.Combine("ClientApp", "dist");
+#endif
             });
 
+#if DEBUG
             //so that we can use IIS and refer to the Website via the Host name of the computer versus the IP which might change.
             services.AddCors();
+#endif
 
             #region SignalR
 
@@ -53,12 +58,15 @@ namespace Cloud.WebApp
                 app.UseDeveloperExceptionPage();
             }
 
-            //so that we can use IIS and refer to the Website via the Host name of the computer versus the IP which might change.
-            app.UseCors(options => options
+            if (env.IsDevelopment())
+            {
+                //so that we can use IIS and refer to the Website via the Host name of the computer versus the IP which might change.
+                app.UseCors(options => options
             .SetIsOriginAllowed(origin => true)
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
+            }
 
             app.UseRouting();
             app.UseSpaStaticFiles();
