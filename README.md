@@ -1,13 +1,13 @@
 # Real-Time IoT with .NET and Raspberry Pi
-This repo contains a visualstudio solution that demonstartes the possibilities of .NET Dev on the Raspberry Pi.
+This repo contains a Visual Studio solution that demonstrates the possibilities of .NET Dev on the Raspberry Pi.
 
 ## Solution overview:
-![](SolutionArchitecture.jpg)
+![](./SolutionArchitecture.jpg)
 
 
 # Raspberry Pi Dev Resources:
 
-## .Net Dev
+## .Net Dev Resources
 
 ### Installing ASP.Net on raspi  
 [https://docs.microsoft.com/en-us/dotnet/iot/deployment](https://docs.microsoft.com/en-us/dotnet/iot/deployment)  
