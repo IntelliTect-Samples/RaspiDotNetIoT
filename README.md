@@ -2,14 +2,14 @@
 This repo contains a Visual Studio solution that demonstrates the possibilities of .NET Dev on the Raspberry Pi.
 
 ## Solution overview:
-![](./SolutionArchitecture.jpg)
+![](./SolutionArchitecture.JPG)
 
 
 # Raspberry Pi Dev Resources:
 
-## .Net Dev Resources
+## .NET Dev Resources
 
-### Installing ASP.Net on raspi  
+### Installing ASP.Net on raspi
 [https://docs.microsoft.com/en-us/dotnet/iot/deployment](https://docs.microsoft.com/en-us/dotnet/iot/deployment)  
   
 ##### add dotnet to the secure path  
