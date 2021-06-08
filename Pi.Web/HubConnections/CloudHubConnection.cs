@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Pi.ConsoleApp
+namespace Pi.Web.HubConnections
 {
 
     public static class CloudHubConnection

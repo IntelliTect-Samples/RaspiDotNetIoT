@@ -71,7 +71,7 @@ namespace Pi.Web
             // string hubUrl = Configuration.GetValue<string>("CloudHubUrlProd");
             string hubUrl = Configuration.GetValue<string>("CloudHubUrlDev");
 
-            CloudHubConnection.Initalize(hubUrl, _PWMServoController);
+            CloudHubConnection.Initialize(hubUrl, _PWMServoController);
         }
 
         private void OnShutdown()
