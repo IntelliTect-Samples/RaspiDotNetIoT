@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,14 +29,7 @@ namespace Cloud.WebApp
             });
 
             //so that we can use IIS and refer to the Website via the Host name of the computer versus the IP which might change.
-            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
-            {
-                builder
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowAnyOrigin()
-                    .AllowCredentials();
-            }));
+            services.AddCors();
 
             #region SignalR
 
@@ -60,6 +52,13 @@ namespace Cloud.WebApp
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //so that we can use IIS and refer to the Website via the Host name of the computer versus the IP which might change.
+            app.UseCors(options => options
+            .SetIsOriginAllowed(origin => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
 
             app.UseRouting();
             app.UseSpaStaticFiles();

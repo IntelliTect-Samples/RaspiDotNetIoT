@@ -69,7 +69,7 @@ export default {
   created() {
     // Listen to "degree changes" coming from SignalR events that are on the Vue event bus now
     this.$emitter.on("degree-status", this.degreeChanged);
-    this.$emitter.emit("get-degree");
+    this.$emitter.emit("get-degree");  
   },
   methods: {
     async setDegree(degree) {
@@ -114,8 +114,8 @@ export default {
 .wrap {
   overflow: hidden;
   position: relative;
-  width: 350px;
-  height: 350px;
+  width: 300px;
+  height: 300px;
   border-radius: 100%;
 }
 
@@ -138,9 +138,9 @@ export default {
 
 .minute {
   position: absolute;
-  height: 130px;
+  height: 120px;
   width: 4px;
-  top: -38%;
+  top: -40%;
   left: 0;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
   transform: rotate(90deg);

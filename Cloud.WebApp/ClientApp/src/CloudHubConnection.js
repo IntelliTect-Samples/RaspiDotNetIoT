@@ -8,8 +8,9 @@ export default {
         const emitter = mitt()
         app.config.globalProperties.$emitter = emitter
 
-        let hubUrl= 'http://nanuk-pro:45455/CloudHub'
+        let hubUrl= 'https://nanuk-pro:45455/CloudHub' // put your url here.
         let connection = null
+       
 
         connection = new HubConnectionBuilder()
             .withUrl(hubUrl)
@@ -17,11 +18,15 @@ export default {
             .configureLogging(LogLevel.Information)
             .build();
 
+        connection.connected=false;
+
         async function start() {
+            connection.connected=false;
             try {
                 await connection.start();
                 console.log("SignalR Connected.");
                 connection.invoke('JoinWebAppClientGroup')
+                connection.connected=true;
 
             } catch (err) {
                 console.log(err);
@@ -40,9 +45,9 @@ export default {
             connection.invoke('SetDegree_WebApp', degree)
         })
 
-        emitter.on('get-degree', ()=> {           
-            connection.invoke('GetDegreeStatus')
-        })
+        emitter.on('get-degree', ()=> {
+           if(connection.connected)                
+            connection.invoke('GetDegreeStatus')})
 
         connection.onclose(start);
         // Start the connection.

@@ -7,11 +7,6 @@ const routes = [
         name: "ServoController",
         component: ServoController,
     },
-    {
-        path: "/ServoController",
-        name: "ServoController",
-        component: ServoController,
-    }
 ];
 
 const router = createRouter({
