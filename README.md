@@ -38,9 +38,9 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 
 ## Working with GPIO (Several Libraires availible)
 
-I encountered several ways to control servos with with DotNet and the Raspberry Pi. The simplest one I leanred of after I finished the solution that is in this repo. That is to use the library [Iot.Device.Bindings](https://www.nuget.org/packages/Iot.Device.Bindings/) in conjuction with System.Device.PWM . There is an Iot.Device.ServoMotor that has a contstructot that allows you to bind to a GPIO pin and specify the range of the servo and the max and min PWM values for it. In this solution however, I used the low level approach of the Unosquare.RaspberryIO.Pi library, as well as tried using System.Device.Gpio .
+I encountered several ways to control servos with with DotNet and the Raspberry Pi. The simplest one I learned of after I finished the solution that is in this repo. It is to use the library [Iot.Device.Bindings](https://www.nuget.org/packages/Iot.Device.Bindings/) in conjuction with System.Device.PWM . There is an Iot.Device.ServoMotor that has a constructor that allows you to bind to a GPIO pin and specify the range of the servo and the max and min PWM values for it. In this solution however, I used the low level approach of the Unosquare.RaspberryIO.Pi library, as well as tried using System.Device.Gpio .
 
-### A good base library for GPIO and all things IoT
+### The Good base library for GPIO and all things IoT!
 Check out https://github.com/dotnet/iot => I wish I had found this before I spent time creating my own servo motor controller
 
 ### GPIO library from microsoft (System.Device.Gpio)
