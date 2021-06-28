@@ -36,7 +36,7 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 ### How to expose an ASP.NET IIS server running on the Pi to the LAN  ( reverse proxy with nginx ) :  
 [https://edi.wang/post/2019/9/29/setup-net-core-30-runtime-and-sdk-on-raspberry-pi-4](https://edi.wang/post/2019/9/29/setup-net-core-30-runtime-and-sdk-on-raspberry-pi-4) 
 
-## Working with GPIO (Several Libraires availible)
+## Working with GPIO (Several Libraries Available for this)
 
 I encountered several ways to control servos with with DotNet and the Raspberry Pi. The simplest one I learned of after I finished the solution that is in this repo. It is to use the library [Iot.Device.Bindings](https://www.nuget.org/packages/Iot.Device.Bindings/) in conjuction with System.Device.PWM . There is an Iot.Device.ServoMotor that has a constructor that allows you to bind to a GPIO pin and specify the range of the servo and the max and min PWM values for it. In this solution however, I used the low level approach of the Unosquare.RaspberryIO.Pi library, as well as tried using System.Device.Gpio .
 
