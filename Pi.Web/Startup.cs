@@ -13,6 +13,10 @@ using UnoPi = Unosquare.RaspberryIO.Pi;
 
 namespace Pi.Web
 {
+    /// <summary>
+    /// Instead of deploying the web server to a remote location, you can instead have the Raspberry Pi host the web server for interacting with itself.
+    /// All in one solution for a local network access to you custom IoT devices.
+    /// </summary>
     public class Startup
     {
         CancellationTokenSource _ButtonListenerCancellationTokenSource = new CancellationTokenSource();

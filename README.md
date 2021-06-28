@@ -36,13 +36,21 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 ### How to expose an ASP.NET IIS server running on the Pi to the LAN  ( reverse proxy with nginx ) :  
 [https://edi.wang/post/2019/9/29/setup-net-core-30-runtime-and-sdk-on-raspberry-pi-4](https://edi.wang/post/2019/9/29/setup-net-core-30-runtime-and-sdk-on-raspberry-pi-4) 
 
-## Working with GPIO 
-  
-### GPIO library  
-[https://docs.microsoft.com/en-us/dotnet/iot/tutorials/temp-sensor](https://docs.microsoft.com/en-us/dotnet/iot/tutorials/temp-sensor)  
-  
-### reading push buttons buttons  
+## Working with GPIO (Several Libraires availible)
+
+I encountered several ways to control servos with with DotNet and the Raspberry Pi. The simplest one I leanred of after I finished the solution that is in this repo. That is to use the library [Iot.Device.Bindings](https://www.nuget.org/packages/Iot.Device.Bindings/) in conjuction with System.Device.PWM . There is an Iot.Device.ServoMotor that has a contstructot that allows you to bind to a GPIO pin and specify the range of the servo and the max and min PWM values for it. In this solution however, I used the low level approach of the Unosquare.RaspberryIO.Pi library, as well as tried using System.Device.Gpio .
+
+### GPIO library from microsoft (System.Device.Gpio)
+[https://docs.microsoft.com/en-us/dotnet/iot/tutorials/temp-sensor](https://docs.microsoft.com/en-us/dotnet/iot/tutorials/temp-sensor)
+
+### reading push buttons buttons (System.Device.Gpio) 
 [https://docs.microsoft.com/en-us/samples/microsoft/windows-iotcore-samples/push-button/](https://docs.microsoft.com/en-us/samples/microsoft/windows-iotcore-samples/push-button/)  
+
+### GPIO library from Unosquare (Unosquare.RaspberryIO.Pi)
+[https://github.com/unosquare/raspberryio](https://github.com/unosquare/raspberryio)
+
+### reading push buttons buttons (Unosquare.RaspberryIO.Pi) 
+[https://github.com/unosquare/raspberryio#interrupts-and-callbacks](https://github.com/unosquare/raspberryio#interrupts-and-callbacks)  
   
 ### learn servos:  
 [https://learn.adafruit.com/adafruits-raspberry-pi-lesson-8-using-a-servo-motor/software](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-8-using-a-servo-motor/software)  
@@ -55,7 +63,7 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 ### Raspi 3 board pinout:  
 [https://pinout.xyz/pinout/pin35_gpio19](https://pinout.xyz/pinout/pin35_gpio19)  
 
-### install wiring pi and export GPIO pin so that it can be used by an app without "sudo":  
+### install wiring pi and export GPIO pin so that it can be used by an app without "sudo" (Uno Sqaure Method):  
 [http://wiringpi.com/the-gpio-utility/](http://wiringpi.com/the-gpio-utility/)  
  
 ## Raspi Pro Tips:  

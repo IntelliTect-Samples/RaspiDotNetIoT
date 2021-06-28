@@ -38,6 +38,9 @@ namespace Pi.ConsoleApp
             // with the valid Abstractions implementation, in order to let Pi know what implementation is going to use:
             UnoPi.Init<BootstrapWiringPi>();
 
+            // Controlling a servo is actually a lot easier than having to use Unosquare.WiringPi : Check out https://www.nuget.org/packages/Iot.Device.Bindings/
+            // It provides a ServoMotor class so you don't have to program one like I ended up doing for this project.
+
             using ServoController servoController = new ServoController(BcmPin.Gpio19);
 
             if (s) Sweep(servoController);
@@ -126,9 +129,7 @@ namespace Pi.ConsoleApp
 
         private static void MicrosoftButtons(ServoController servoController)
         {
-            //if using UnoSquare
-            /*var UP_PIN = BcmPin.Gpio23;
-            var DOWN_PIN = BcmPin.Gpio24;*/
+         
 
             //if using Microsoft Gpio
             int UP_PIN = 23;
